@@ -46,19 +46,46 @@ class Recommender:
         return "Explanation placeholder"
 
 def load_songs(csv_path: str) -> List[Dict]:
-    """
-    Loads songs from a CSV file.
-    Required by src/main.py
-    """
-    # TODO: Implement CSV loading logic
-    print(f"Loading songs from {csv_path}...")
-    return []
+    """Reads a CSV file and returns a list of song dictionaries with numeric fields converted."""
+    import csv
+
+    numeric_fields = {"id": int, "energy": float, "tempo_bpm": float,
+                      "valence": float, "danceability": float, "acousticness": float}
+    songs = []
+    with open(csv_path, newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            for field, convert in numeric_fields.items():
+                row[field] = convert(row[field])
+            songs.append(row)
+    return songs
+
+def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, str]:
+    """Scores a single song against user preferences and returns (score, explanation)."""
+    score = 0.0
+    reasons = []
+
+    # Genre match: +2.0
+    if song["genre"] == user_prefs["genre"]:
+        score += 2.0
+        reasons.append(f"genre match ({song['genre']}) (+2.0)")
+
+    # Mood match: +1.0
+    if song["mood"] == user_prefs["mood"]:
+        score += 1.0
+        reasons.append(f"mood match ({song['mood']}) (+1.0)")
+
+    # Energy similarity: 0.0 to +1.0
+    energy_score = 1.0 - abs(song["energy"] - user_prefs["energy"])
+    score += energy_score
+    reasons.append(f"energy similarity (+{energy_score:.2f})")
+
+    explanation = "; ".join(reasons) if reasons else "no strong match"
+    return score, explanation
+
 
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
-    """
-    Functional implementation of the recommendation logic.
-    Required by src/main.py
-    """
-    # TODO: Implement scoring and ranking logic
-    # Expected return format: (song_dict, score, explanation)
-    return []
+    """Scores all songs, sorts by score descending, and returns the top k results."""
+    scored = [(song, *score_song(user_prefs, song)) for song in songs]
+    scored.sort(key=lambda x: x[1], reverse=True)
+    return scored[:k]

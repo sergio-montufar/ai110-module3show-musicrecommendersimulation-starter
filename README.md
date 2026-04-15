@@ -29,6 +29,35 @@ Some prompts to answer:
 
 You can include a simple diagram or bullet list if helpful.
 
+Real-world recommendation systems like Spotify combine multiple strategies, including analyzing listening history across millions of users and using machine learning to predict what someone will enjoy next. Our version takes a simpler content-based approach: it compares a user's stated preferences, such as favorite genre, mood, and energy level, which against the attributes of each song in the catalog. Songs that closely match the user's taste receive higher scores, and the top-scoring songs are returned as recommendations. It's a simplified model, but it demonstrates the core logic behind how any recommender decides what to suggest.
+
+```mermaid
+flowchart TD
+    A["🎧 Input: User Preferences\nfavorite_genre\nfavorite_mood\ntarget_energy"] --> B["📂 Load Songs from CSV"]
+
+    B --> C{"For each song\nin the catalog"}
+
+    C --> D["Step 1: Genre Check\nsong.genre == favorite_genre\n+2.0 if match, +0.0 if not"]
+
+    D --> E["Step 2: Mood Check\nsong.mood == favorite_mood\n+1.0 if match, +0.0 if not"]
+
+    E --> F["Step 3: Energy Similarity\n1.0 - abs(song.energy - target_energy)\n+0.0 to +1.0"]
+
+    F --> G["Sum Score\ngenre + mood + energy\nMax possible: 4.0"]
+
+    G --> H{"More songs\nto score?"}
+    H -->|Yes| C
+    H -->|No| I["Sort all songs\nby score descending"]
+
+    I --> J["Return Top K"]
+
+    J --> K["🎵 Output: Top K Recommendations\nwith scores and explanations"]
+```
+
+**Potential Biases:** This system may over-prioritize genre since a genre match alone (+2.0) outweighs a perfect mood match and strong energy similarity combined. This means a song that perfectly fits the user's mood and energy but belongs to a different genre will consistently rank below a same-genre song that misses on mood entirely. The system also treats all genres and moods as equally different and it sees no relationship between "indie pop" and "pop" or between "chill" and "relaxed," even though a human listener would consider them closely related. Finally, because the catalog is small (20 songs) and was curated by one person, the available genres and moods reflect that person's taste, so the recommender can only work well for users whose preferences happen to overlap with what's in the dataset.
+
+![Recommender Output](recommender_output.png)
+
 ---
 
 ## Getting Started
