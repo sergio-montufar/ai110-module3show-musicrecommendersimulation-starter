@@ -58,6 +58,20 @@ flowchart TD
 
 ![Recommender Output](recommender_output.png)
 
+### Testing It Out
+
+![Contradictory Profile](profile_screenshots/contradictory.png)
+
+![Nothing Matches Profile](profile_screenshots/nothing_matches.png)
+
+![Nearly Identical Profile](profile_screenshots/nearly_identical.png)
+
+![Extreme Boundary Profile](profile_screenshots/extreme_boundary.png)
+
+![Loyalty vs Vibes Profile](profile_screenshots/loyalty_vs_vibes.png)
+
+![Recommender Output](profile_screenshots/recommender_output.png)
+
 ---
 
 ## Getting Started

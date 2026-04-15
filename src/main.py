@@ -16,21 +16,31 @@ def main() -> None:
     songs = load_songs("data/songs.csv")
     print(f"Loaded songs: {len(songs)}")
 
-    # Starter example profile
-    user_prefs = {"genre": "hip-hop", "mood": "happy", "energy": 0.9}
+    test_profiles = [
+        {"name": "Contradictory",    "genre": "lofi",      "mood": "chill",      "energy": 0.95},
+        {"name": "Nothing Matches",  "genre": "reggaeton", "mood": "angry",      "energy": 0.50},
+        {"name": "Nearly Identical", "genre": "pop",       "mood": "happy",      "energy": 0.79},
+        {"name": "Extreme Boundary", "genre": "ambient",   "mood": "chill",      "energy": 0.0},
+        {"name": "Loyalty vs Vibes", "genre": "metal",     "mood": "aggressive", "energy": 0.30},
+    ]
 
-    recommendations = recommend_songs(user_prefs, songs, k=5)
+    for profile in test_profiles:
+        label = profile.pop("name")
+        user_prefs = profile
 
-    print("\n" + "=" * 50)
-    print("  🎵 Top Recommendations")
-    print("=" * 50)
+        recommendations = recommend_songs(user_prefs, songs, k=5)
 
-    for rank, (song, score, explanation) in enumerate(recommendations, 1):
-        print(f"\n  #{rank}  {song['title']} by {song['artist']}")
-        print(f"       Genre: {song['genre']} | Mood: {song['mood']} | Energy: {song['energy']}")
-        print(f"       Score: {score:.2f} / 4.00")
-        print(f"       Why:   {explanation}")
-        print("  " + "-" * 46)
+        print("\n" + "=" * 50)
+        print(f"  🎵 Test: {label}")
+        print(f"  Profile: genre={user_prefs['genre']}, mood={user_prefs['mood']}, energy={user_prefs['energy']}")
+        print("=" * 50)
+
+        for rank, (song, score, explanation) in enumerate(recommendations, 1):
+            print(f"\n  #{rank}  {song['title']} by {song['artist']}")
+            print(f"       Genre: {song['genre']} | Mood: {song['mood']} | Energy: {song['energy']}")
+            print(f"       Score: {score:.2f} / 4.00")
+            print(f"       Why:   {explanation}")
+            print("  " + "-" * 46)
 
 
 if __name__ == "__main__":
